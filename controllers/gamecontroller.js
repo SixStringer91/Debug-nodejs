@@ -1,15 +1,14 @@
-const router = require('express').Router({ mergeParams: true });;
-const Game = require('../models/game');
+const router = require('express').Router({ mergeParams: true });
+const { sequelize, Sequelize } = require('../db');
+const Game = require('../models/game')(sequelize, Sequelize);
 
-router.get('/', (req, res) => {console.log('auth')});
 
 router.get('/all', (req, res) => {
-    console.log('хуй');
-    Game.findAll({ where: { owner_id: req.user.id } })
+    Game.findAll({ where: { owner_id: req.body.user.id } })
         .then(
             function findSuccess(data) {
                 res.status(200).json({
-                    games: games,
+                    games: data,
                     message: "Data fetched."
                 })
             },
@@ -20,7 +19,7 @@ router.get('/all', (req, res) => {
                 })
             }
         )
-})
+});
 
 router.get('/:id', (req, res) => {
     Game.findOne({ where: { id: req.params.id, owner_id: req.user.id } })
@@ -60,7 +59,7 @@ router.post('/create', (req, res) => {
                 res.status(500).send(err.message)
             }
         )
-})
+});
 
 router.put('/update/:id', (req, res) => {
     Game.update({
