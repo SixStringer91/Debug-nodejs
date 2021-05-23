@@ -1,12 +1,16 @@
+const BEARER = 'Bearer'
 const jwt = require('jsonwebtoken');
 const { sequelize, Sequelize } = require('../db');
-const User = require('../models/user')( sequelize, Sequelize );
+const User = require('../models/user')(sequelize, Sequelize);
 
 module.exports = function (req, res, next) {
     if (req.method == 'OPTIONS') {
         next();   // allowing options as a method for request
     } else {
-        const sessionToken = req.headers.authorization.split(' ')[1];
+        const tokenString = req.headers.authorization.split(' ');
+        const sessionToken = tokenString[0] === BEARER
+            ? tokenString[1]
+            : null;
         console.log(sessionToken);
         if (!sessionToken) return res.status(403).send({ auth: false, message: "No token provided." });
         else {

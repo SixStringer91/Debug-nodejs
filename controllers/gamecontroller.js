@@ -39,6 +39,7 @@ router.get('/:id', (req, res) => {
 })
 
 router.post('/create', (req, res) => {
+    console.log(req);
     Game.create({
         title: req.body.game.title,
         owner_id: req.body.user.id,
